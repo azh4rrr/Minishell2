@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymouchta <ymouchta@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azmakhlo <azmakhlo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:24:27 by ymouchta          #+#    #+#             */
-/*   Updated: 2025/07/21 19:34:25 by ymouchta         ###   ########.fr       */
+/*   Updated: 2025/07/30 18:07:28 by azmakhlo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	exit_s(int status)
+{
+	static int	exit_status;
+
+	if (status == -1)
+		return (exit_status);
+	exit_status = status;
+	return (exit_status);
+}
 
 int	status_scan(int *status)
 {
@@ -45,13 +55,13 @@ bool	wait_and_exit(int last_pid)
 		{
 			if (WIFEXITED(status))
 			{
-				g_exit_status = WEXITSTATUS(status);
-				if (g_exit_status == 1)
+				exit_s(WEXITSTATUS(status));
+				if (exit_s(-1) == 1)
 					return (true);
 			}
 			else if (WIFSIGNALED(status))
 			{
-				g_exit_status = status_scan(&status);
+				exit_s(status_scan(&status));
 			}
 		}
 	}
